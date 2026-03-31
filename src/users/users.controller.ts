@@ -1,11 +1,13 @@
 import {
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import type { User } from '../type/usersType';
@@ -38,5 +40,14 @@ export class UsersController {
   delete(@Param('id') id: string): string {
     this.usersService.delete(+id);
     return `User with id ${id} has been deleted`;
+  }
+  @Get()
+  @HttpCode(200)
+  findAllWithQuery(
+    @Query('page') page?: string,
+    @Query('size') size?: string,
+    @Query('search') search?: string,
+  ): string {
+    return `Page: ${page}, Size: ${size}, Search: ${search}`;
   }
 }
