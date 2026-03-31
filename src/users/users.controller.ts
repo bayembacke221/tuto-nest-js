@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -22,8 +23,8 @@ export class UsersController {
   }
   @Get(':id')
   @HttpCode(200)
-  findOne(@Param('id') id: string): User {
-    return this.usersService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number): User {
+    return this.usersService.findOne(id);
   }
   @Post()
   @HttpCode(201)
@@ -32,8 +33,8 @@ export class UsersController {
   }
   @Patch(':id')
   @HttpCode(200)
-  update(@Param('id') id: string, @Body() user: User): User {
-    return this.usersService.update(+id, user) as User;
+  update(@Param('id', ParseIntPipe) id: number, @Body() user: User): User {
+    return this.usersService.update(id, user) as User;
   }
   @Delete(':id')
   @HttpCode(200)
