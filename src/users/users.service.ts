@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '../type/usersType';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -41,36 +43,40 @@ export class UsersService {
   }
 
   findOne(id: number): User {
-    return this.users.find((user) => user.id === id) as User;
+    const user = this.users.find((user) => user.id === id);
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+    return user;
   }
 
-  create(user: User): User {
+  create(userDto: CreateUserDto): User {
     const newUser = {
-      ...user,
+      ...userDto,
       id: this.users.length + 1,
     };
     this.users.push(newUser);
     return newUser;
   }
 
-  update(id: number, user: User): User | null {
+  update(id: number, userDto: UpdateUserDto): User | null {
     const index = this.users.findIndex((user) => user.id === id);
     if (index === -1) {
-      return null;
+      throw new NotFoundException(`User with id ${id} not found`);
     }
     this.users[index] = {
       ...this.users[index],
-      ...user,
+      ...userDto,
     };
     return this.users[index];
   }
 
-  delete(id: number): boolean {
+  delete(id: number): string {
     const index = this.users.findIndex((user) => user.id === id);
     if (index === -1) {
-      return false;
+      throw new NotFoundException(`User with id ${id} not found`);
     }
     this.users.splice(index, 1);
-    return true;
+    return `User with id ${id} has been deleted`;
   }
 }
